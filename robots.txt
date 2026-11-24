@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://strong-tarsier-1ec529.netlify.app/sitemap.xml

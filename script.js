@@ -1,4 +1,4 @@
-/* AgentX: dependency-free enhancements. Enquiry information never leaves the browser. */
+/* AgentX: dependency-free UI enhancements and same-origin Netlify Forms submissions. */
 'use strict';
 
 document.documentElement.classList.replace('no-js', 'js');
@@ -127,115 +127,129 @@ const enquiryFields = document.querySelector('#enquiry-fields');
 const selectedPlan = document.querySelector('#selected-plan');
 const planInput = document.querySelector('#enquiry-plan');
 const serviceInput = document.querySelector('#service');
-const briefResult = document.querySelector('#brief-result');
-const briefText = document.querySelector('#brief-text');
-const briefHeading = document.querySelector('#brief-heading');
 const formStatus = document.querySelector('#form-status');
-let preparedBrief = '';
+const submitButton = enquiryForm.querySelector('[type="submit"]');
+const submitLabel = submitButton.querySelector('.submit-label');
+const nameInput = document.querySelector('#name');
+const emailInput = document.querySelector('#email');
+const messageInput = document.querySelector('#message');
+const submissionTimeoutMs = 20000;
+let isSubmitting = false;
 let autoSelectedService = '';
 
 // A manual project-type choice takes precedence over later package suggestions.
 serviceInput.addEventListener('change', () => { autoSelectedService = ''; });
 
-function clearBrief() {
-  preparedBrief = '';
-  briefText.textContent = '';
-  briefResult.hidden = true;
-  formStatus.textContent = '';
+function setFormStatus(state, message, focus = false) {
+  formStatus.dataset.state = state;
+  formStatus.textContent = message;
+  if (focus) formStatus.focus();
 }
 
 document.querySelectorAll('[data-enquiry]').forEach((link) => {
   link.addEventListener('click', () => {
+    // An in-flight enquiry is immutable; do not alter its package context mid-request.
+    if (isSubmitting) return;
     const plan = link.dataset.enquiry;
     planInput.value = plan;
     selectedPlan.textContent = `You’re exploring: ${plan}. Your final scope will be agreed together.`;
     selectedPlan.hidden = false;
     if (!serviceInput.value || serviceInput.value === autoSelectedService) {
       const suggestedServices = {
-        Launch: 'Website or landing page',
-        Build: 'Not sure yet',
-        Evolve: 'Website care and refinement'
+        'Landing page': 'Website or landing page',
+        'Business website': 'Website or landing page',
+        'Premium website': 'Website or landing page',
+        Maintenance: 'Website care and refinement',
+        'International project': 'Not sure yet'
       };
       serviceInput.value = suggestedServices[plan] || '';
       autoSelectedService = serviceInput.value;
     }
-    clearBrief();
+    setFormStatus('', '');
   });
 });
 
-enquiryForm.addEventListener('input', clearBrief);
-enquiryForm.addEventListener('change', clearBrief);
+enquiryForm.addEventListener('input', (event) => {
+  if (typeof event.target.setCustomValidity === 'function') event.target.setCustomValidity('');
+  if (!isSubmitting) setFormStatus('', '');
+});
+enquiryForm.addEventListener('change', () => {
+  if (!isSubmitting) setFormStatus('', '');
+});
 
-// No fetch, email action, analytics, localStorage, or simulated submission.
-// Register the submit handler BEFORE enabling fields so a failed script cannot submit a native GET.
-enquiryForm.addEventListener('submit', (event) => {
+// Without fetch/AbortController, the static POST form retains Netlify's native fallback.
+enquiryForm.addEventListener('submit', async (event) => {
+  if (!window.fetch || !window.AbortController) return;
   event.preventDefault();
-  if (!enquiryForm.reportValidity()) return;
-  const data = new FormData(enquiryForm);
-  const name = String(data.get('name') || '').trim();
-  const email = String(data.get('email') || '').trim();
-  const message = String(data.get('message') || '').trim();
+  if (isSubmitting) return;
 
-  if (!name || message.length < 20) {
-    formStatus.textContent = !name ? 'Please enter your name.' : 'Please describe your project in at least 20 non-padding characters.';
-    document.querySelector(!name ? '#name' : '#message').focus();
+  nameInput.value = nameInput.value.trim();
+  emailInput.value = emailInput.value.trim();
+  nameInput.setCustomValidity(nameInput.value ? '' : 'Please enter your name.');
+  messageInput.setCustomValidity(messageInput.value.trim().length >= 20 ? '' : 'Please describe your project in at least 20 non-padding characters.');
+  if (!enquiryForm.reportValidity()) return;
+
+  // Construct the payload before disabling fields; disabled controls are omitted by FormData.
+  const data = new FormData(enquiryForm);
+  if (String(data.get('bot-field') || '')) {
+    setFormStatus('error', 'Unable to submit this enquiry. Please email agentx.digital.official@gmail.com for help.', true);
     return;
   }
 
-  preparedBrief = [
-    'AGENTX — PROJECT ENQUIRY',
-    'Prepared locally. This enquiry has NOT been sent.',
-    '',
-    `Name: ${name}`,
-    `Email: ${email}`,
-    `Project type: ${data.get('service')}`,
-    ...(data.get('plan') ? [`Starting point: ${data.get('plan')}`] : []),
-    '',
-    'PROJECT IDEA',
-    message,
-    '',
-    'Enquiry delivery is not configured. Keep this brief for a verified contact channel.'
-  ].join('\n');
+  if (!['http:', 'https:'].includes(window.location.protocol)) {
+    setFormStatus('error', 'Please use the published AgentX website to submit, or email agentx.digital.official@gmail.com. Your details are still here.', true);
+    return;
+  }
+  if (navigator.onLine === false) {
+    setFormStatus('error', 'You appear to be offline. Your details are still here. Reconnect to submit, or email agentx.digital.official@gmail.com.', true);
+    return;
+  }
 
-  // textContent prevents user-entered markup from becoming executable HTML.
-  briefText.textContent = preparedBrief;
-  briefResult.hidden = false;
-  formStatus.textContent = 'Brief prepared on this device. Nothing has been sent.';
-  briefHeading.focus();
-});
-enquiryFields.disabled = false;
+  data.set('form-name', enquiryForm.getAttribute('name'));
+  data.set('message', messageInput.value.trim());
+  const body = new URLSearchParams(data).toString();
+  const controller = new AbortController();
+  const timeout = window.setTimeout(() => controller.abort(), submissionTimeoutMs);
+  isSubmitting = true;
+  enquiryFields.disabled = true;
+  enquiryForm.setAttribute('aria-busy', 'true');
+  submitLabel.textContent = 'Sending enquiry…';
+  setFormStatus('loading', 'Sending your enquiry. Please wait.');
 
-document.querySelector('#copy-brief').addEventListener('click', async () => {
-  if (!preparedBrief) return;
   try {
-    if (!navigator.clipboard || !window.isSecureContext) throw new Error('Clipboard unavailable');
-    await navigator.clipboard.writeText(preparedBrief);
-    formStatus.textContent = 'Brief copied. It has not been sent.';
-  } catch {
-    formStatus.textContent = 'Clipboard access is unavailable. Select the brief text to copy it, or use Download .txt.';
-    const selection = window.getSelection();
-    if (selection) {
-      const range = document.createRange();
-      range.selectNodeContents(briefText);
-      selection.removeAllRanges();
-      selection.addRange(range);
-    }
-    briefText.focus();
+    // Netlify parses the static form at deploy time and receives URL-encoded POSTs here.
+    // No API key or custom backend is required. Only a successful HTTP response confirms submission.
+    const response = await fetch('/', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+      body,
+      credentials: 'same-origin',
+      mode: 'same-origin',
+      signal: controller.signal
+    });
+    if (!response.ok) throw new Error('Submission was not accepted');
+
+    enquiryForm.reset();
+    // Setting a hidden input's value also changes its default, so reset it explicitly.
+    planInput.value = '';
+    autoSelectedService = '';
+    selectedPlan.hidden = true;
+    selectedPlan.textContent = '';
+    setFormStatus('success', 'Thank you — your enquiry has been submitted. We’ll reply using the email you provided.', true);
+  } catch (error) {
+    // A lost connection or timeout can happen after server acceptance. Do not claim non-delivery.
+    const message = error.name === 'AbortError'
+      ? 'We couldn’t confirm receipt before the request timed out. Your details are still here. Please email agentx.digital.official@gmail.com before retrying to avoid duplicates.'
+      : 'We couldn’t confirm your submission. Your details are still here. Please try again or email agentx.digital.official@gmail.com.';
+    setFormStatus('error', message, true);
+  } finally {
+    window.clearTimeout(timeout);
+    isSubmitting = false;
+    enquiryFields.disabled = false;
+    enquiryForm.removeAttribute('aria-busy');
+    submitLabel.textContent = 'Send enquiry';
   }
 });
 
-document.querySelector('#download-brief').addEventListener('click', () => {
-  if (!preparedBrief) return;
-  const blob = new Blob([preparedBrief], { type: 'text/plain;charset=utf-8' });
-  const url = URL.createObjectURL(blob);
-  const link = document.createElement('a');
-  link.href = url;
-  link.download = 'agentx-project-enquiry.txt';
-  document.body.append(link);
-  link.click();
-  link.remove();
-  window.setTimeout(() => URL.revokeObjectURL(url), 1000);
-  formStatus.textContent = 'Brief download requested. Nothing has been sent to AgentX.';
-});
-
+// No personal data is written to localStorage, analytics, or console logs.
 document.querySelector('#year').textContent = String(new Date().getFullYear());

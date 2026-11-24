@@ -1,0 +1,36 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="630" viewBox="0 0 1200 630"><defs><radialGradient id="card-glow"><stop stop-color="#392357" stop-opacity=".4"/><stop offset="1" stop-color="#09090f" stop-opacity="0"/></radialGradient><linearGradient id="card-type" x2="1" y2=".2"><stop stop-color="#c09aff"/><stop offset=".6" stop-color="#9568ff"/><stop offset="1" stop-color="#6b9aff"/></linearGradient></defs><rect width="1200" height="630" fill="#09090f"/><circle cx="990" cy="300" r="460" fill="url(#card-glow)"/><path d="M72 70h10l23 34H95Z" fill="#b18aff"/><path d="M95 70h10l-23 34H72Z" fill="#9568ff" opacity=".6"/><text x="118" y="99" fill="#f6f5ff" font-family="Arial,sans-serif" font-size="34" font-weight="700" letter-spacing="-1.6">Agent<tspan fill="#b18aff">X</tspan><tspan fill="#ff4d6d">.</tspan></text><path d="M72 166h23" stroke="#ff4d6d"/><text x="108" y="171" fill="#b7a2cb" font-family="Arial,sans-serif" font-size="12" font-weight="600" letter-spacing="2.7">IDEAS MEET A NEW DIMENSION</text><text x="68" y="260" fill="#f6f5ff" font-family="Arial,sans-serif" font-size="76" font-weight="600" letter-spacing="-4">Engineering</text><text x="68" y="346" fill="#f6f5ff" font-family="Arial,sans-serif" font-size="76" font-weight="600" letter-spacing="-4">the <tspan fill="url(#card-type)">digital</tspan></text><text x="68" y="433" fill="url(#card-type)" font-family="Arial,sans-serif" font-size="76" font-weight="600" letter-spacing="-4">future.</text><text x="72" y="503" fill="#a5a4b7" font-family="Arial,sans-serif" font-size="18">Thoughtful design. Precise engineering.</text><path d="M72 555h1056" stroke="#bca3ee" stroke-opacity=".16"/><text x="72" y="592" fill="#a5a4b7" font-family="Arial,sans-serif" font-size="12" letter-spacing="2">WEB DEVELOPMENT · DIGITAL SOLUTIONS</text><svg x="615" y="10" width="610" height="610" viewBox="0 0 640 640" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+            <defs>
+              <linearGradient id="orbit-gradient" x1="74" y1="86" x2="538" y2="558" gradientUnits="userSpaceOnUse"><stop stop-color="#ff4d6d"/><stop offset=".42" stop-color="#9568ff"/><stop offset="1" stop-color="#4d7cff"/></linearGradient>
+              <linearGradient id="x-front" x1="218" y1="184" x2="435" y2="450" gradientUnits="userSpaceOnUse"><stop stop-color="#ff9eae"/><stop offset=".22" stop-color="#ba8cff"/><stop offset=".5" stop-color="#7650ec"/><stop offset=".78" stop-color="#4d7cff"/><stop offset="1" stop-color="#a4cbff"/></linearGradient>
+              <linearGradient id="x-side" x1="202" y1="201" x2="454" y2="429" gradientUnits="userSpaceOnUse"><stop stop-color="#542c66"/><stop offset=".45" stop-color="#34236c"/><stop offset="1" stop-color="#233b8b"/></linearGradient>
+              <linearGradient id="x-shine" x1="210" y1="200" x2="416" y2="421" gradientUnits="userSpaceOnUse"><stop stop-color="#ffe5ee"/><stop offset=".5" stop-color="#c4b6ff" stop-opacity=".08"/><stop offset="1" stop-color="#b7d5ff"/></linearGradient>
+              <radialGradient id="orb-core"><stop stop-color="#443172" stop-opacity=".34"/><stop offset=".7" stop-color="#171322" stop-opacity=".16"/><stop offset="1" stop-color="#09090f" stop-opacity="0"/></radialGradient>
+              <filter id="orbit-glow" x="-50%" y="-50%" width="200%" height="200%"><feGaussianBlur stdDeviation="3"/></filter>
+              <filter id="x-shadow" x="-50%" y="-50%" width="200%" height="200%"><feDropShadow dx="0" dy="15" stdDeviation="25" flood-color="#5e42db" flood-opacity=".35"/></filter>
+            </defs>
+            <circle cx="320" cy="320" r="265" fill="url(#orb-core)"/>
+            <g class="orbital-shell" stroke="url(#orbit-gradient)">
+              <circle cx="320" cy="320" r="228" opacity=".1"/>
+              <circle cx="320" cy="320" r="211" opacity=".14" stroke-dasharray="2 10"/>
+              <ellipse cx="320" cy="320" rx="260" ry="121" transform="rotate(-36 320 320)" opacity=".6"/>
+              <ellipse cx="320" cy="320" rx="263" ry="127" transform="rotate(36 320 320)" opacity=".35"/>
+              <ellipse cx="320" cy="320" rx="115" ry="260" transform="rotate(-22 320 320)" opacity=".32"/>
+              <ellipse cx="320" cy="320" rx="143" ry="243" transform="rotate(36 320 320)" opacity=".15"/>
+              <ellipse cx="320" cy="320" rx="244" ry="78" transform="rotate(-36 320 320)" opacity=".14"/>
+              <path d="M105 395c53 75 211 44 350-68 35-28 65-59 87-90" stroke-width="2" opacity=".85"/>
+              <path d="M151 163c-11 83 69 217 183 305 44 34 86 54 122 61" stroke-width="1.5" opacity=".6"/>
+            </g>
+            <g class="orbit-satellite orbit-satellite-one"><circle cx="136" cy="218" r="9" fill="#ff4d6d" opacity=".3" filter="url(#orbit-glow)"/><circle cx="136" cy="218" r="3.5" fill="#ff9cad"/></g>
+            <g class="orbit-satellite orbit-satellite-two"><circle cx="520" cy="277" r="10" fill="#4d7cff" opacity=".5" filter="url(#orbit-glow)"/><circle cx="520" cy="277" r="4" fill="#a4cbff"/></g>
+            <g class="orbit-satellite orbit-satellite-three"><circle cx="288" cy="550" r="7" fill="#9568ff" opacity=".4" filter="url(#orbit-glow)"/><circle cx="288" cy="550" r="3" fill="#c4aaff"/></g>
+            <g class="hero-monogram" filter="url(#x-shadow)">
+              <path d="m203 203 27-20h65l60 90 58-90h66l-92 135 92 137-27 20h-66l-60-91-60 91h-65l-27-20 93-136-84-116Z" fill="url(#x-side)"/>
+              <path d="M203 203h66l59 91 59-91h66l-92 135 92 137h-66l-59-91-60 91h-65l92-137-92-135Z" fill="url(#x-front)"/>
+              <path d="M203 203h66l59 91 59-91h66l-92 135 92 137h-66l-59-91-60 91h-65l92-137-92-135Z" stroke="url(#x-shine)" stroke-width="1.5"/>
+              <path d="m203 203 27-20h65l-26 20m59 91 27-21m32-70 26-20h66l-26 20M361 338l26-20 92 137-26 20" stroke="#e6d8ff" stroke-opacity=".4"/>
+              <path d="m209 207 89 131-88 131h54l64-96 63 96h51l-90-131 90-131h-51l-63 96-63-96h-56Z" stroke="url(#x-shine)" opacity=".23"/>
+              <path d="m269 203 59 91-33 44-92-135h66Z" fill="#fff" fill-opacity=".07"/>
+            </g>
+            <g fill="#b3a5d3"><circle cx="106" cy="330" r="1.5"/><circle cx="468" cy="137" r="2"/><circle cx="530" cy="453" r="1.5"/><circle cx="220" cy="93" r="1"/><circle cx="165" cy="504" r="1.5"/></g>
+            <g stroke="#8a7fa8" opacity=".5"><path d="M480 493h10m-5-5v10M90 159h8m-4-4v8M423 72h8m-4-4v8"/></g>
+          </svg></svg>
